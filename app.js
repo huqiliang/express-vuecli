@@ -1,59 +1,68 @@
-var express = require('express'),
-    path = require('path'),
-    consolidate = require('consolidate');
+var express = require("express"),
+    path = require("path");
+    consolidate = require("consolidate");
 
-var isDev = process.env.NODE_ENV !== 'production';
+var isDev = process.env.NODE_ENV !== "production";
 var app = express();
-var port = 3000;
+var port = 9999;
 
-app.engine('html', consolidate.ejs);
-app.set('view engine', 'html');
-app.set('views', path.resolve(__dirname, './server/views'));
+app.engine("html", consolidate.ejs);
+app.set("view engine", "html");
+app.set("views", path.resolve(__dirname, "./server/views"));
 
 // local variables for all views
-app.locals.env = process.env.NODE_ENV || 'dev';
-app.locals.reload = true;
+app.locals.env = process.env.NODE_ENV || "dev";
+// app.locals.reload = true;
 
 if (isDev) {
+    (async function() {
+        require("./server/routes")(app);
 
-    // static assets served by webpack-dev-middleware & webpack-hot-middleware for development
-    var webpack = require('webpack'),
-        webpackDevMiddleware = require('webpack-dev-middleware'),
-        webpackHotMiddleware = require('webpack-hot-middleware'),
-        webpackDevConfig = require('./webpack.config.js');
+        // static assets served by webpack-dev-middleware & webpack-hot-middleware for development
+        var webpack = require("webpack"),
+            webpackDevMiddleware = require("webpack-dev-middleware"),
+            webpackHotMiddleware = require("webpack-hot-middleware"),
+            webpackDevConfig = await require("./clientthree/build/webpack.dev.conf");
+        //console.log(test);
+        Object.keys(webpackDevConfig.entry).forEach(function(name) {
+            var extras = ["webpack-hot-middleware/client?reload=1&noInfo=true"];
+            webpackDevConfig.entry[name] = extras.concat(
+                webpackDevConfig.entry[name]
+            );
+        });
+   
+        var compiler = webpack(webpackDevConfig);
 
-    var compiler = webpack(webpackDevConfig);
+        // attach to the compiler & the server
+        app.use(
+            webpackDevMiddleware(compiler, {
+                // public path should be the same with webpack config
+                publicPath: webpackDevConfig.output.publicPath,
+                noInfo: true,
+                hot: true,
+                stats: {
+                    colors: true
+                }
+            })
+        );
+        app.use(webpackHotMiddleware(compiler));
 
-    // attach to the compiler & the server
-    app.use(webpackDevMiddleware(compiler, {
+        // add "reload" to express, see: https://www.npmjs.com/package/reload
+        //var reload = require("reload");
+        var http = require("http");
 
-        // public path should be the same with webpack config
-        publicPath: webpackDevConfig.output.publicPath,
-        noInfo: true,
-        stats: {
-            colors: true
-        }
-    }));
-    app.use(webpackHotMiddleware(compiler));
+        var server = http.createServer(app);
+        //reload(server, app);
 
-    require('./server/routes')(app);
-
-    // add "reload" to express, see: https://www.npmjs.com/package/reload
-    var reload = require('reload');
-    var http = require('http');
-
-    var server = http.createServer(app);
-    reload(server, app);
-
-    server.listen(port, function(){
-        console.log('App (dev) is now running on port 3000!');
-    });
+        server.listen(port, function() {
+            console.log("App (dev) is now running on port!"+port);
+        });
+    })();
 } else {
-
     // static assets served by express.static() for production
-    app.use(express.static(path.join(__dirname, 'public')));
-    require('./server/routes')(app);
-    app.listen(port, function () {
-        console.log('App (production) is now running on port 3000!');
+    app.use(express.static(path.join(__dirname, "public")));
+    require("./server/routes")(app);
+    app.listen(port, function() {
+        console.log("App (production) is now running on port 3000!");
     });
 }

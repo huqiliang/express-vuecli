@@ -1,42 +1,29 @@
 {
-  "name": "express-webpack-full-live-reload-example",
-  "version": "1.0.0",
-  "description": "A workflow with full live reload for webpack&express application.",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/kenanpengyou/express-webpack-full-live-reload-example.git"
-  },
-  "author": "liangzhu",
-  "main": "app.js",
-  "scripts": {
-    "start": "cross-env NODE_ENV=dev supervisor -w server,app.js -e node,js,html app",
-    "browsersync": "cross-env NODE_ENV=dev node app_browsersync",
-    "build": "webpack",
-    "production": "webpack --config webpack.production.config.js -p & cross-env NODE_ENV=production node app"
-  },
-  "license": "MIT",
-  "dependencies": {
-    "consolidate": "^0.14.5",
-    "ejs": "^2.5.7",
-    "express": "^4.16.2"
-  },
-  "devDependencies": {
-    "browser-sync": "^2.18.13",
-    "chokidar": "^1.7.0",
-    "clean-webpack-plugin": "^0.1.17",
-    "cross-env": "^3.2.4",
-    "css-loader": "^0.26.4",
-    "extract-text-webpack-plugin": "^2.1.2",
-    "file-loader": "^0.10.1",
-    "node-sass": "^4.7.2",
-    "npm-install-webpack-plugin": "^4.0.5",
-    "reload": "^1.1.7",
-    "resolve-url-loader": "^2.2.0",
-    "sass-loader": "^6.0.6",
-    "style-loader": "^0.13.2",
-    "url-loader": "^0.5.9",
-    "webpack": "^2.7.0",
-    "webpack-dev-middleware": "^1.12.2",
-    "webpack-hot-middleware": "^2.21.0"
-  }
+    "name": "express-webpack-full-live-reload-example",
+    "version": "1.0.0",
+    "description": "A workflow with full live reload for webpack&express application.",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/kenanpengyou/express-webpack-full-live-reload-example.git"
+    },
+    "author": "liangzhu",
+    "main": "app.js",
+    "scripts": {
+        "start": "cross-env NODE_ENV=dev supervisor -w server,app.js -e node,js,html app",
+        "browsersync": "cross-env NODE_ENV=dev node app_browsersync",
+        "build": "webpack",
+        "production": "webpack --config webpack.production.config.js -p & cross-env NODE_ENV=production node app"
+    },
+    "license": "MIT",
+    "dependencies": {
+        "consolidate": "^0.14.5",
+        "ejs": "^2.5.7",
+        "express": "^4.16.2",
+        "reload": "^2.2.2"
+    },
+    "devDependencies": {
+        "webpack": "^3.6.0",
+        "webpack-dev-middleware": "^1.12.2",
+        "webpack-hot-middleware": "^2.21.0"
+    }
 }
